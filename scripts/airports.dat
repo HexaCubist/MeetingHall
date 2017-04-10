@@ -1,4 +1,3 @@
-Airport ID, Name, City, Country, IATA, ICAO, Latitude, Longitude, Altitude, Timezone, DST, Tz (Olson) format, Type, Source
 3782,"Mobile Regional Airport","Mobile","United States","MOB","KMOB",30.691200256348,-88.242797851562,219,-6,"A","America/Chicago","airport","OurAirports"
 3783,"Moffett Federal Airfield","Mountain View","United States","NUQ","KNUQ",37.416099548339844,-122.04900360107422,32,-8,"A","America/Los_Angeles","airport","OurAirports"
 3784,"Santa Fe Municipal Airport","Santa Fe","United States","SAF","KSAF",35.617099762,-106.088996887,6348,-7,"A","America/Denver","airport","OurAirports"
