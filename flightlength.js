@@ -58,7 +58,7 @@ function nearestport(lat1, long1) {
 		"ID": nearestportid,
 		"distance": nearestdist
 	};
-	console.log(returnvar);
+	// console.log(returnvar);
 	return returnvar;
 }
 // Function to find the best path between two points
@@ -75,21 +75,48 @@ function findpath([startlat, startlong], [endlat, endlong]) {
 }
 
 function findbest() {
-	distance = calcdist(markers[0], markers[1]);
-	bearing = calcbearing(markers[0], markers[1]);
-	$('#info').html(
-		"<b>Distance:</b> " + distance + 
-		"<b>Bearing:</b> " + bearing);
-	bestplaces = {}
+	// Make a list of marker airports (nearest)
+	var markerports = [];
 	for (var i = 0; i < markers.length; i++) {
-		marker = markers[id];
-		for (airportid in airports) {
-			airport = airports[airportid];
-			location = [airport["Latitude"], airport["Longitude"]];
-			findpath(marker, location);
-		}
+		marker = markers[i];
+		markerports.push(nearestport(marker[0], marker[1]));
 	}
-	airportpaths = findpath(markers[0], markers[1]);
+	// Make a list of all the markers in HTML
+	console.log(markerports);
+	var markerhtml = "<div class='locations row'>";
+	for (var i = 0; i < markerports.length; i++) {
+		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /></div></div></div>";
+	}
+	markerhtml += "</div>";
+	$('#info').html(markerhtml);
+	// Now, let's calculate the average of all locations
+	average = averageloc(markers);
+	console.log(average);
+	mapMarkers.push(
+		new google.maps.Marker({
+			position: {
+				lat: average[0],
+				lng: average[1]
+			},
+			label: {
+				text: "M",
+				color: "white"
+			}
+
+		})
+	);
+	setMarkers();
+
+	// bestplaces = {}
+	// for (var i = 0; i < markers.length; i++) {
+	// 	marker = markers[id];
+	// 	for (airportid in airports) {
+	// 		airport = airports[airportid];
+	// 		location = [airport["Latitude"], airport["Longitude"]];
+	// 		findpath(marker, location);
+	// 	}
+	// }
+	// airportpaths = findpath(markers[0], markers[1]);
 	// routecoords = []
 	// console.log(airportpaths)
 	// for (var i = 0; i < airportpaths.length; i++) {

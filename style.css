@@ -2,3 +2,8 @@
 	height: 600px;
 	width: 100%;
 }
+
+.locations .card {
+    margin: 5px;
+    background: #cbe4a3;
+}

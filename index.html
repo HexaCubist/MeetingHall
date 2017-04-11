@@ -50,17 +50,42 @@
 		}
 
 		function averageloc(locations) { // Locations in the format of [[lat1, lon1], [lat2, lon2]...etc]
-			// body...
+			// Calculation Concept sourced from http://stackoverflow.com/a/491784/3902950
+			
+			// Latitude Calculations
+			y = 0
+			x = 0
+			for (var i = 0; i < locations.length; i++) {
+				lat = locations[i][0].toRadians();
+				x += Math.cos(lat)
+				y += Math.sin(lat)
+			}
+			average_lat = Math.atan2(y, x).toDegrees();
+			
+			// Longitude Calculations
+			y = 0
+			x = 0
+			for (var i = 0; i < locations.length; i++) {
+				long = locations[i][1].toRadians();
+				x += Math.cos(long)
+				y += Math.sin(long)
+			}
+			average_long = Math.atan2(y, x).toDegrees();
+			return([average_lat, average_long])
 		}
-
 	</script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 <body>
-	<h3>Google Maps</h3> <button onclick="findbest()">Calculate Best Meeting place</button>
+	<br>
+	<h3>Google Maps <button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button><button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear</button> </h3>
+	<br>
 	<div id="map"></div>
 	<div id="info"></div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 	<script src="maps.js"></script>
 	<!-- Graphing library, which will help us do pathfinding -->
 	<script src="graph.js"></script>

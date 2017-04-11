@@ -14,38 +14,32 @@ function initMap() {
 	});
 
 
-	function setMarkers() {
+	window.setMarkers = function() {
 		for (var i = 0; i < mapMarkers.length; i++) {
 			mapMarkers[i].setMap(map); //Add the marker to the map
 		}
 	}
-	function clearMarkers() {
+	window.clearMarkers = function() {
 		for (var i = 0; i < mapMarkers.length; i++) {
 			mapMarkers[i].setMap(null); //Remove the marker from the map
 		}
 		mapMarkers = []; // Delete all markers
+		markers = []; // Delete all marker coords
 	}
 
 
-	function placeMarker(location, event) {
+	window.placeMarker = function(location, event) {
 		nummarkers = nummarkers + 1;
-		
-		if(nummarkers > 2) {
-			clearMarkers();
-			markers = []
-			nummarkers = 0;
-		} else {
-			mapMarkers.push(
-				new google.maps.Marker({
-					position: location
-				})
-			);
-			setMarkers();
-			markers.push([location.lat(), location.lng()])
+		mapMarkers.push(
+			new google.maps.Marker({
+				position: location
+			})
+		);
+		setMarkers();
+		markers.push([location.lat(), location.lng()])
 
-			console.log(markers);
-			console.log(nummarkers);
-		}
+		console.log(markers);
+		console.log(nummarkers);
 	}
 
 
