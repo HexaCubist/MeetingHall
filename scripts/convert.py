@@ -72,5 +72,6 @@ with codecs.open('routes.dat','r', "utf-8") as f:
             })
 
 # Export data as a json file
-with open('data.json', 'w') as outfile:
+with open('data.js', 'w') as outfile:
+    outfile.write("airports = ")
     json.dump(database, outfile)
