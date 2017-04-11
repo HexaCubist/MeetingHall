@@ -45,31 +45,6 @@ function initMap() {
 
 			console.log(markers);
 			console.log(nummarkers);
-
-			if(nummarkers == 2) {
-				distance = calcdist(markers[0], markers[1]);
-				bearing = calcbearing(markers[0], markers[1]);
-				$('#info').html(
-					"<b>Distance:</b> " + distance + 
-					"<b>Bearing:</b> " + bearing);
-				airportpaths = findpath(markers[0], markers[1]);
-				routecoords = []
-				console.log(airportpaths)
-				for (var i = 0; i < airportpaths.length; i++) {
-					routecoords.push({
-						lat: parseFloat(airportpaths[i]["Latitude"]),
-						lng: parseFloat(airportpaths[i]["Longitude"])
-						})
-				}
-				var flightPath = new google.maps.Polyline({
-					path: routecoords,
-					geodesic: true,
-					strokeColor: '#FF0000',
-					strokeOpacity: 1.0,
-					strokeWeight: 2
-				});
-				flightPath.setMap(map);
-			}
 		}
 	}
 

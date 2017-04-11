@@ -48,10 +48,15 @@
 			var brng = Math.atan2(y, x).toDegrees();
 			return brng;
 		}
+
+		function averageloc(locations) { // Locations in the format of [[lat1, lon1], [lat2, lon2]...etc]
+			// body...
+		}
+
 	</script>
 </head>
 <body>
-	<h3>Google Maps</h3> <!-- <button>Calculate Best Meeting place</button> -->
+	<h3>Google Maps</h3> <button onclick="findbest()">Calculate Best Meeting place</button>
 	<div id="map"></div>
 	<div id="info"></div>
 
