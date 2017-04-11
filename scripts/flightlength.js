@@ -33,6 +33,17 @@ for (var airportid in airports) {
 	}
 }
 
+// Let's also build a list of airports where they have 10 or more routes leaving. We can use this later as a list of options for destinations
+airhubs = {}
+for (var airportid in airports) {
+	airport = airports[airportid];
+	if(!airport["Routes"]) {continue;}
+	// console.log(airport["Routes"].length);
+	if(airport["Routes"].length >= 10) {
+		airhubs[airportid] = airport;
+	}
+}
+
 // Now we have a list of connections between each airport, and the time it takes to travel to each one. Now, we can use the pathfinding algorithm to get the best route to any airport in the world assuming there is a possible path.
 graph = new Graph(connections);
 // Function to find the nearest airport
