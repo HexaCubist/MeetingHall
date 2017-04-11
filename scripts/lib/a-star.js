@@ -1,3 +1,5 @@
+// Taken from
+// https://github.com/acbabis/es6-a-star
 var StringSet = function() {};
 StringSet.prototype.add = function(key) {this[key] = true;};
 StringSet.prototype.contains = function(key) {return this[key];};
