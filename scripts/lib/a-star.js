@@ -66,6 +66,7 @@ function aStar(params) {
         status: 'timeout',
         cost: bestNode.g,
         path: reconstructPath(bestNode),
+        time: new Date() - startTime
       };
     }
     var node = openHeap.pop();
@@ -76,6 +77,7 @@ function aStar(params) {
         status: 'success',
         cost: node.g,
         path: reconstructPath(node),
+        time: new Date() - startTime
       };
     }
     // not done yet
@@ -123,6 +125,7 @@ function aStar(params) {
     status: "noPath",
     cost: bestNode.g,
     path: reconstructPath(bestNode),
+    time: new Date() - startTime
   };
 }
 

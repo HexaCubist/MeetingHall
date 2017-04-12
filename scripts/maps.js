@@ -38,8 +38,8 @@ function initMap() {
 		setMarkers();
 		markers.push([location.lat(), location.lng()])
 
-		console.log(markers);
-		console.log(nummarkers);
+		// console.log(markers);
+		// console.log(nummarkers);
 	}
 
 

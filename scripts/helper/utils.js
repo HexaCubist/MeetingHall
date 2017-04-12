@@ -14,14 +14,14 @@ Object.defineProperty(Number.prototype, "toDegrees", {
 function calcdist([lat1, lon1], [lat2, lon2]) {
 	// Calculate distance between two latlongs
 	var R = 6378137; // metres
-	var φ1 = lat1.toRadians();
-	var φ2 = lat2.toRadians();
-	var Δφ = (lat2-lat1).toRadians();
-	var Δλ = (lon2-lon1).toRadians();
+	var phi1 = lat1.toRadians();
+	var phi2 = lat2.toRadians();
+	var changeinphi = (lat2-lat1).toRadians();
+	var changeinlambda = (lon2-lon1).toRadians();
 
-	var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-		   Math.cos(φ1) * Math.cos(φ2) *
-		   Math.sin(Δλ/2) * Math.sin(Δλ/2);
+	var a = Math.sin(changeinphi/2) * Math.sin(changeinphi/2) +
+		   Math.cos(phi1) * Math.cos(phi2) *
+		   Math.sin(changeinlambda/2) * Math.sin(changeinlambda/2);
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
 	var d = R * c;
@@ -29,16 +29,16 @@ function calcdist([lat1, lon1], [lat2, lon2]) {
 }
 
 function calcbearing([lat1, lon1], [lat2, lon2]) {
-	var φ1 = lat1.toRadians();
-	var φ2 = lat2.toRadians();
-	var λ1 = lon1.toRadians();
-	var λ2 = lon2.toRadians();
-	var Δφ = (lat2-lat1).toRadians();
-	var Δλ = (lon2-lon1).toRadians();
+	var phi1 = lat1.toRadians();
+	var phi2 = lat2.toRadians();
+	var lambda1 = lon1.toRadians();
+	var lambda2 = lon2.toRadians();
+	var changeinphi = (lat2-lat1).toRadians();
+	var changeinlambda = (lon2-lon1).toRadians();
 
-	var y = Math.sin(λ2-λ1) * Math.cos(φ2);
-	var x = Math.cos(φ1)*Math.sin(φ2) -
-		Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+	var y = Math.sin(lambda2-lambda1) * Math.cos(phi2);
+	var x = Math.cos(phi1)*Math.sin(phi2) -
+		Math.sin(phi1)*Math.cos(phi2)*Math.cos(lambda2-lambda1);
 	var brng = Math.atan2(y, x).toDegrees();
 	return brng;
 }

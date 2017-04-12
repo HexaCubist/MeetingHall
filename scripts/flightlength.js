@@ -49,13 +49,14 @@ for (var airportid in airports) {
 	}
 }
 
-// Let's also build a list of airports where they have 10 or more routes leaving. We can use this later as a list of options for destinations
+// Let's also build a list of airports where they have 50 or more routes leaving. We can use this later as a list of options for destinations
+// Why are we doing this? The smaller the airport, typically the smaller the surrounding population. This means that often it'd be a less ideal location to meet
 airhubs = {}
 for (var airportid in airports) {
 	airport = airports[airportid];
 	if(!airport["Routes"]) {continue;}
 	// console.log(airport["Routes"].length);
-	if(airport["Routes"].length >= 10) {
+	if(airport["Routes"].length >= 50) {
 		airhubs[airportid] = airport;
 	}
 }
@@ -75,18 +76,26 @@ for (var airportid in airports) {
 
 // neighbor - function(node) that returns an array of neighbors for a node
 function path_neighbor(node) {
-	if(!airport["Routes"]) {return [];} //return empty array if we don't have any listed routes
-	return Object.keys(airports[node]["Routes"]);
+	if(!airports[node]["Routes"]) {return [];} //return empty array if we don't have any listed routes
+	var neighbors = [];
+	for (var i = 0; i < airports[node]["Routes"].length; i++) {
+		var routeid = airports[node]["Routes"][i]["Destination airport ID"];
+		if(airports[routeid] == null) {continue;} //Ignore routes where we don't know about the destination airport
+		neighbors.push(routeid);
+	}
+	// console.log(neighbors);
+	return neighbors;
 }
 
 // distance - function(a, b) that returns the distance cost between two nodes
 function path_distance(a, b) {
+	// console.log(a, b);
 	// Get location of start point
-	lat1 = parseInt(airports[a]["Latitude"]);
-	long1 = parseInt(airports[a]["Longitude"]);
+	lat1 = parseFloat(airports[a]["Latitude"]);
+	long1 = parseFloat(airports[a]["Longitude"]);
 	// Get location of end point
-	lat2 = parseInt(airports[b]["Latitude"]);
-	long2 = parseInt(airports[b]["Longitude"]);
+	lat2 = parseFloat(airports[b]["Latitude"]);
+	long2 = parseFloat(airports[b]["Longitude"]);
 	// Return the calculated distance
 	return calcdist([lat1, long1], [lat2, long2]);
 }
@@ -94,32 +103,40 @@ function path_distance(a, b) {
 // Now we have defined the helper functions, let's build a function to find the best path between two points
 // This is not the final step, but it's getting there.
 // We can either pass coordinates or airport ids to this
-function findpath([startlat, startlong], [endlat, endlong], startport, endport) {
-	if(!(startport && endport)) {
-		startport = nearestport(startlat, startlong);
-		endport = nearestport(endlat, endlong);
-	}
+function findpath_coords([startlat, startlong], [endlat, endlong]) {
+	// console.log("Calculating nearest airport...")
+	// console.log([startlat, startlong], [endlat, endlong])
+	startport = nearestport(startlat, startlong);
+	endport = nearestport(endlat, endlong);
+	return findpath_id(startport["ID"], endport["ID"]);
+}
 
+function findpath_id(startportid, endportid) {
+	startport = airports[startportid];
+	endport = airports[endportid];
+	// console.log(startport);
+	// console.log(endport);
 	// Now that we have the start and end nodes, we can build out paramter object and pass it to the algorithm
 	var params = {
-		"start" : startport["ID"],
+		"start" : startportid,
 		"isEnd" : function(node) {
 			return node == endport["ID"];
 		},
-		"neighbor": path_neighbor(),
-		"distance": path_distance(),
+		"neighbor": path_neighbor,
+		"distance": path_distance,
 		"heuristic": function(node) {
 			// Get distance from node to end node
 			// Get location of node point
-			lat1 = parseInt(airports[node]["Latitude"]);
-			long1 = parseInt(airports[node]["Longitude"]);
+			lat1 = parseFloat(airports[node]["Latitude"]);
+			long1 = parseFloat(airports[node]["Longitude"]);
 			// Get location of end point
-			lat2 = parseInt(endport["Latitude"]);
-			long2 = parseInt(endport["Longitude"]);
+			lat2 = parseFloat(endport["Latitude"]);
+			long2 = parseFloat(endport["Longitude"]);
 			// Return the calculated distance
 			return calcdist([lat1, long1], [lat2, long2]);
 		}
 	}
+	// console.log(params);
 	var path = aStar(params);
 	shortestpath = path["path"];
 	airportpaths = [];
@@ -129,12 +146,13 @@ function findpath([startlat, startlong], [endlat, endlong], startport, endport) 
 	return {
 		"status": path["status"],
 		"path": airportpaths,
-		"cost": path["cost"]
+		"cost": path["cost"],
+		"time": path["time"]
 	};
 }
 
-
 function findbest() {
+	console.log(Date.now());
 	// Make a list of marker airports (nearest)
 	var markerports = [];
 	for (var i = 0; i < markers.length; i++) {
@@ -144,7 +162,7 @@ function findbest() {
 	// Make a list of all the markers in HTML
 	var markerhtml = "<div class='locations row'>";
 	for (var i = 0; i < markerports.length; i++) {
-		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /></div></div></div>";
+		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
 	}
 	markerhtml += "</div>";
 	$('#info').html(markerhtml);
@@ -164,4 +182,52 @@ function findbest() {
 		})
 	);
 	setMarkers();
+
+	// Now, let's find the the meeting point!
+	// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
+	// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
+	// First, let's find a place to store our data:
+	potentiallocations = {};
+	// Schema is: {
+	// 	"ID1": [path1, path2, path3, etc...],
+	// 	"ID2": [path1, path2, path3, etc...],
+	// 	"ID3": [path1, path2, path3, etc...]
+	// 	etc...
+	// }
+	for (var i = 0; i < markers.length; i++) {
+		marker = markers[i];
+		for(var airhubid in airhubs) {
+			airhub = airhubs[airhubid];
+
+			lat2 = parseFloat(airhub["Latitude"]);
+			long2 = parseFloat(airhub["Longitude"]);
+
+			path = findpath_coords(marker, [lat2, long2]);
+			if(!potentiallocations[airhubid]) {
+				// Create if doesn't exist
+				potentiallocations[airhubid] = []
+			}
+			potentiallocations[airhubid].push(path)
+		}
+	}
+	console.log("Now we have a list of times for each user to reach a location, let's find the best:");
+	console.log(Date.now());
+	console.log(potentiallocations);
+	// Now we have a list of times for each user to reach a location, let's find the best:
+	bestport = null;
+	besttime = Number.MAX_SAFE_INTEGER;
+	for (var locationid in potentiallocations) {
+		console.log(potentiallocations[locationid]);
+		currcost = 0;
+		for (var x = 0; x < potentiallocations[locationid].length; x++) {
+			console.log(potentiallocations[locationid][x]);
+			currcost += parseFloat(potentiallocations[locationid][x]["cost"]);
+		}
+		if (currcost < besttime) {
+			bestport = potentiallocations[locationid];
+			besttime = currcost;
+		}
+	}
+	console.log(bestport, besttime);
+	console.log(Date.now());
 }
