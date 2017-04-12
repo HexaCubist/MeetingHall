@@ -152,38 +152,42 @@ function findpath_id(startportid, endportid) {
 }
 
 function findbest() {
+	console.log(Date.now());
+	// Make a list of marker airports (nearest)
+	var markerports = [];
+	for (var i = 0; i < markers.length; i++) {
+		marker = markers[i];
+		markerports.push(nearestport(marker[0], marker[1]));
+	}
+	// Make a list of all the markers in HTML
+	var markerhtml = "<div class='locations row'>";
+	for (var i = 0; i < markerports.length; i++) {
+		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
+	}
+	markerhtml += "</div>";
+	$('#info').html(markerhtml);
+	// Now, let's calculate the average of all locations
+	average = averageloc(markers);
+	mapMarkers.push(
+		new google.maps.Marker({
+			position: {
+				lat: average[0],
+				lng: average[1]
+			},
+			label: {
+				text: "M",
+				color: "white"
+			}
+
+		})
+	);
+	setMarkers();
+}
+
+// Get cities by flight time
+function citiesbyflighttime(markers, airports, airhubs) {
 	try {
-		console.log(Date.now());
-		// Make a list of marker airports (nearest)
-		var markerports = [];
-		for (var i = 0; i < markers.length; i++) {
-			marker = markers[i];
-			markerports.push(nearestport(marker[0], marker[1]));
-		}
-		// Make a list of all the markers in HTML
-		var markerhtml = "<div class='locations row'>";
-		for (var i = 0; i < markerports.length; i++) {
-			markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
-		}
-		markerhtml += "</div>";
-		$('#info').html(markerhtml);
-		// Now, let's calculate the average of all locations
-		average = averageloc(markers);
-		mapMarkers.push(
-			new google.maps.Marker({
-				position: {
-					lat: average[0],
-					lng: average[1]
-				},
-				label: {
-					text: "M",
-					color: "white"
-				}
-
-			})
-		);
-		setMarkers();
-
+		log = "";
 		// Now, let's find the the meeting point!
 		// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
 		// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
@@ -211,17 +215,17 @@ function findbest() {
 				potentiallocations[airhubid].push(path)
 			}
 		}
-		console.log("Now we have a list of times for each user to reach a location, let's find the best:");
-		console.log(Date.now());
-		console.log(potentiallocations);
+		log += ("Now we have a list of times for each user to reach a location, let's find the best:") + "\n";
+		log += (Date.now()) + "\n";
+		log += (potentiallocations) + "\n";
 		// Now we have a list of times for each user to reach a location, let's find the best:
 		bestport = null;
 		besttime = Number.MAX_SAFE_INTEGER;
 		for (var locationid in potentiallocations) {
-			console.log(potentiallocations[locationid]);
+			log += (potentiallocations[locationid]) + "\n";
 			currcost = 0;
 			for (var x = 0; x < potentiallocations[locationid].length; x++) {
-				console.log(potentiallocations[locationid][x]);
+				log += (potentiallocations[locationid][x]) + "\n";
 				cost = parseFloat(potentiallocations[locationid][x]["cost"]);
 				currcost += cost;
 			}
@@ -232,6 +236,10 @@ function findbest() {
 				besttime = currcost;
 			}
 		}
-		console.log(bestport, besttime);
-		console.log(Date.now());
+		log += (bestport, besttime) + "\n";
+		log += (Date.now()) + "\n";
+		return(log);
+	} catch(e) {
+		return(e);
+	}
 }
