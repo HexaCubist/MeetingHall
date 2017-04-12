@@ -7,7 +7,10 @@
 </head>
 <body>
 	<br>
-	<h3>Google Maps <button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button><button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear</button> </h3>
+	<h3>Google Maps 
+	<input type="text" id="search-input"></ins>
+	<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
+	<button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear</button> </h3>
 	<br>
 	<div id="map"></div>
 	<div id="info"></div>
@@ -18,7 +21,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 	<script src="scripts/maps.js"></script>
 	<script async defer
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8R5GiMfrknBTSZENSItv91Vh9JfFTE4&callback=initMap"></script>
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8R5GiMfrknBTSZENSItv91Vh9JfFTE4&libraries=places&callback=initMap"></script>
 
 	<!-- Utils file containing more generic functions -->
 	<script src="scripts/helper/utils.js"></script>

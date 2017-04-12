@@ -152,82 +152,86 @@ function findpath_id(startportid, endportid) {
 }
 
 function findbest() {
-	console.log(Date.now());
-	// Make a list of marker airports (nearest)
-	var markerports = [];
-	for (var i = 0; i < markers.length; i++) {
-		marker = markers[i];
-		markerports.push(nearestport(marker[0], marker[1]));
-	}
-	// Make a list of all the markers in HTML
-	var markerhtml = "<div class='locations row'>";
-	for (var i = 0; i < markerports.length; i++) {
-		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
-	}
-	markerhtml += "</div>";
-	$('#info').html(markerhtml);
-	// Now, let's calculate the average of all locations
-	average = averageloc(markers);
-	mapMarkers.push(
-		new google.maps.Marker({
-			position: {
-				lat: average[0],
-				lng: average[1]
-			},
-			label: {
-				text: "M",
-				color: "white"
+	try {
+		console.log(Date.now());
+		// Make a list of marker airports (nearest)
+		var markerports = [];
+		for (var i = 0; i < markers.length; i++) {
+			marker = markers[i];
+			markerports.push(nearestport(marker[0], marker[1]));
+		}
+		// Make a list of all the markers in HTML
+		var markerhtml = "<div class='locations row'>";
+		for (var i = 0; i < markerports.length; i++) {
+			markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
+		}
+		markerhtml += "</div>";
+		$('#info').html(markerhtml);
+		// Now, let's calculate the average of all locations
+		average = averageloc(markers);
+		mapMarkers.push(
+			new google.maps.Marker({
+				position: {
+					lat: average[0],
+					lng: average[1]
+				},
+				label: {
+					text: "M",
+					color: "white"
+				}
+
+			})
+		);
+		setMarkers();
+
+		// Now, let's find the the meeting point!
+		// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
+		// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
+		// First, let's find a place to store our data:
+		potentiallocations = {};
+		// Schema is: {
+		// 	"ID1": [path1, path2, path3, etc...],
+		// 	"ID2": [path1, path2, path3, etc...],
+		// 	"ID3": [path1, path2, path3, etc...]
+		// 	etc...
+		// }
+		for (var i = 0; i < markers.length; i++) {
+			marker = markers[i];
+			for(var airhubid in airhubs) {
+				airhub = airhubs[airhubid];
+
+				lat2 = parseFloat(airhub["Latitude"]);
+				long2 = parseFloat(airhub["Longitude"]);
+
+				path = findpath_coords(marker, [lat2, long2]);
+				if(!potentiallocations[airhubid]) {
+					// Create if doesn't exist
+					potentiallocations[airhubid] = []
+				}
+				potentiallocations[airhubid].push(path)
 			}
-
-		})
-	);
-	setMarkers();
-
-	// Now, let's find the the meeting point!
-	// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
-	// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
-	// First, let's find a place to store our data:
-	potentiallocations = {};
-	// Schema is: {
-	// 	"ID1": [path1, path2, path3, etc...],
-	// 	"ID2": [path1, path2, path3, etc...],
-	// 	"ID3": [path1, path2, path3, etc...]
-	// 	etc...
-	// }
-	for (var i = 0; i < markers.length; i++) {
-		marker = markers[i];
-		for(var airhubid in airhubs) {
-			airhub = airhubs[airhubid];
-
-			lat2 = parseFloat(airhub["Latitude"]);
-			long2 = parseFloat(airhub["Longitude"]);
-
-			path = findpath_coords(marker, [lat2, long2]);
-			if(!potentiallocations[airhubid]) {
-				// Create if doesn't exist
-				potentiallocations[airhubid] = []
+		}
+		console.log("Now we have a list of times for each user to reach a location, let's find the best:");
+		console.log(Date.now());
+		console.log(potentiallocations);
+		// Now we have a list of times for each user to reach a location, let's find the best:
+		bestport = null;
+		besttime = Number.MAX_SAFE_INTEGER;
+		for (var locationid in potentiallocations) {
+			console.log(potentiallocations[locationid]);
+			currcost = 0;
+			for (var x = 0; x < potentiallocations[locationid].length; x++) {
+				console.log(potentiallocations[locationid][x]);
+				cost = parseFloat(potentiallocations[locationid][x]["cost"]);
+				currcost += cost;
 			}
-			potentiallocations[airhubid].push(path)
+			// Why are we squaring the cost (below)? This is because we want the cost for both sides to be as low as possible EACH, not total. By squaring it, we're placing a disadvantage on one number being super large.
+			currcost = currcost ** 2;
+			if (currcost < besttime) {
+				bestport = potentiallocations[locationid];
+				besttime = currcost;
+			}
 		}
-	}
-	console.log("Now we have a list of times for each user to reach a location, let's find the best:");
-	console.log(Date.now());
-	console.log(potentiallocations);
-	// Now we have a list of times for each user to reach a location, let's find the best:
-	bestport = null;
-	besttime = Number.MAX_SAFE_INTEGER;
-	for (var locationid in potentiallocations) {
-		console.log(potentiallocations[locationid]);
-		currcost = 0;
-		for (var x = 0; x < potentiallocations[locationid].length; x++) {
-			console.log(potentiallocations[locationid][x]);
-			currcost += parseFloat(potentiallocations[locationid][x]["cost"]);
-		}
-		if (currcost < besttime) {
-			bestport = potentiallocations[locationid];
-			besttime = currcost;
-		}
-	}
-	console.log(bestport, besttime);
-	console.log(Date.now());
+		console.log(bestport, besttime);
+		console.log(Date.now());
 }
