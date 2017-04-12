@@ -152,7 +152,6 @@ function findpath_id(startportid, endportid) {
 }
 
 function findbest() {
-	try {
 		console.log(Date.now());
 		// Make a list of marker airports (nearest)
 		var markerports = [];
