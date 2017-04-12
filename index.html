@@ -10,7 +10,7 @@
 	<h3>Google Maps 
 	<input type="text" id="search-input"></ins>
 	<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
-	<button onclick="MT.process(clearMarkers, callback)();" class="btn inline btn-danger float-right">Clear</button> </h3>
+	<button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear</button> </h3>
 	<br>
 	<div id="map"></div>
 	<div id="info"></div>
@@ -22,12 +22,6 @@
 	<script src="scripts/maps.js"></script>
 	<script async defer
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8R5GiMfrknBTSZENSItv91Vh9JfFTE4&libraries=places&callback=initMap"></script>
-	<!-- Multithreading JS! -->
-	<script src="scripts/lib/multithread.js"></script>
-	<script type="text/javascript">
-		var num_threads = 2;
-		var MT = new Multithread(num_threads);
-	</script>
 
 	<!-- Utils file containing more generic functions -->
 	<script src="scripts/helper/utils.js"></script>
