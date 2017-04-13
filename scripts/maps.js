@@ -48,6 +48,7 @@ function initMap() {
 		// Let's add the markers from here to our side menu
 		html = "";
 		for (var i = 0; i < markers.length; i++) {
+			console.log(markers[i]);
 			lat = markers[i][0];
 			long = markers[i][1];
 			airport = nearestport(lat,long);
