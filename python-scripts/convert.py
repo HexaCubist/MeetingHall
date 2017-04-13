@@ -3,6 +3,7 @@ import codecs
 import csv
 from datetime import datetime
 import hashlib
+from collections import defaultdict
 
 input("Welcome! Press enter to start the conversion. This will take files from airports.dat and routes.dat and build a JSON 'database' out of them")
 
@@ -78,7 +79,9 @@ with open('airports.js', 'w') as outfile:
     outfile.write("airports = ")
     json.dump(database, outfile)
 
-database = {}
+database = defaultdict(list)
+# Lookup table for city id
+lookupID = []
 # Open list of Weather data by City and extract into usable format
 with codecs.open('GlobalLandTemperaturesByCity.csv','r', "utf-8") as f:
     reader = csv.reader(f)
@@ -93,16 +96,22 @@ with codecs.open('GlobalLandTemperaturesByCity.csv','r', "utf-8") as f:
     next(f) # Skip headers
     for row in reader:
         temperatures = row
-        # Let's make a unique id that is replicatable so we can use it again when we get the same city
-        id = int(hashlib.md5(temperatures[3].encode('utf-8')).hexdigest(), 16)
+        # Check if we've proccessed the city before
+        hasproccessed = False
+        id = len(lookupID)
+        for i, City in enumerate(lookupID):
+            if City == temperatures[3]:
+                hasproccessed = False
+                id = i
+                break
         # Check to see if we've already made our data structure
         if(not database[id]):
             # If not, then let's build an object to store data in
             database[id] = {
                 "City" : temperatures[3],
                 "Country": temperatures[4],
-                "Latitude": temperatures[5],
-                "Longitude": temperatures[6],
+                "Latitude": float(temperatures[5][:-1]),
+                "Longitude": float(temperatures[6][:-1]),
                 "TemperatureMonths": { # Each month of the year, recording total temperature per month
                     1: 0,
                     2: 0,
@@ -140,7 +149,7 @@ with codecs.open('GlobalLandTemperaturesByCity.csv','r', "utf-8") as f:
         # The datetime object is timezone-naive, but that's okay as we're on the scale of months
         datetime_object = datetime.strptime(temperatures[0], '%Y-%m-%d')
         # Add the temperature to our object => array
-        database[id]["TemperatureMonths"][datetime_object.month] += temperatures[1]
+        database[id]["TemperatureMonths"][datetime_object.month] += float(temperatures[1])
         # Increment the number of data points for that month by 1 for book keeping
         database[id]["DataPointMonths"][datetime_object.month] += 1
 
