@@ -50,8 +50,8 @@ function initMap() {
 		for (var i = 0; i < markers.length; i++) {
 			lat = markers[i][0];
 			long = markers[i][1];
-			nearestport = nearestport(lat,long);
-			city = nearestport["airport"]["City"];
+			airport = nearestport(lat,long);
+			city = airport["airport"]["City"];
 			// String
 			html += "<div id='marker'> <h3>Marker" + i + "</h3> <p><strong>City:</strong> " + city + "</p> </div>"
 		}
