@@ -72,6 +72,44 @@ with codecs.open('routes.dat','r', "utf-8") as f:
             })
 
 # Export data as a json file
-with open('data.js', 'w') as outfile:
+with open('airports.js', 'w') as outfile:
     outfile.write("airports = ")
     json.dump(database, outfile)
+
+
+# Open list of Weather data by City and extract into usable format
+with codecs.open('airports.dat','r', "utf-8") as f:
+    reader = csv.reader(f)
+    # Schema for airports.dat:
+    # 0: Airport ID
+    # 1: Name
+    # 2: City
+    # 3: Country
+    # 4: IATA
+    # 5: ICAO
+    # 6: Latitude
+    # 7: Longitude
+    # 8: Altitude
+    # 9: Timezone
+    # 10: DST
+    # 11: Tz (Olson) format
+    # 12: Type
+    # 13: Source
+    for row in reader:
+        airport = row
+        database[airport[0]] = {
+            "Name": airport[1],
+            "City": airport[2],
+            "Country": airport[3],
+            "IATA": airport[4],
+            "ICAO": airport[5],
+            "Latitude": airport[6],
+            "Longitude": airport[7],
+            "Altitude": airport[8],
+            "Timezone": airport[9],
+            "DST": airport[10],
+            "Tz (Olson) format": airport[11],
+            "Type": airport[12],
+            "Source": airport[13]
+        }
+
