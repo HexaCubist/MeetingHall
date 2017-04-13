@@ -55,7 +55,7 @@ function initMap() {
 			// String
 			html += "<div id='marker'> <h3>Marker" + i + "</h3> <p><strong>City:</strong> " + city + "</p> </div>"
 		}
-		$('#markerlist').html(markerhtml);
+		$('#markerlist').html(html);
 	}
 
 	window.deleteMarker = function(markerid) {
