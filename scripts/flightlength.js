@@ -32,7 +32,7 @@ function nearestport(lat1, long1) {
 // First, let's calculate flight lengths for each route
 for (var airportid in airports) {
 	for (route in airports[airportid]["Routes"]) {
-		// Equation for calculating time from distance = (30 min plus 1 hr/500 mi)
+		// Equation for calculating time from distance = (30 min plus 1 hr/800 mi)
 		// Taken from Openflights Github page (hidden on line 2327 of openflights.js)
 		// However, first we must calculate distance:
 		airport1 = airports[airportid];
@@ -96,8 +96,17 @@ function path_distance(a, b) {
 	// Get location of end point
 	lat2 = parseFloat(airports[b]["Latitude"]);
 	long2 = parseFloat(airports[b]["Longitude"]);
-	// Return the calculated distance
-	return calcdist([lat1, long1], [lat2, long2]);
+	// Get the distance
+	distance = calcdist([lat1, long1], [lat2, long2]);
+	// 
+	// 
+	// Equation for calculating time from distance = (30 min plus 1 hr/800 mi)
+	// Taken from Openflights Github page (hidden on line 2327 of openflights.js)
+	// However, first we must calculate distance:
+	// Now that we have the distance, calculate the time:
+	time = (30 + 60*(distance/1000/800));
+	// Return the calculated time
+	return time;
 }
 
 // Now we have defined the helper functions, let's build a function to find the best path between two points
@@ -120,7 +129,7 @@ function findpath_id(startportid, endportid) {
 	var params = {
 		"start" : startportid,
 		"isEnd" : function(node) {
-			return node == endport["ID"];
+			return node == endportid;
 		},
 		"neighbor": path_neighbor,
 		"distance": path_distance,
@@ -151,86 +160,83 @@ function findpath_id(startportid, endportid) {
 	};
 }
 
-function findbest() {
-		console.log(Date.now());
-		// Make a list of marker airports (nearest)
-		var markerports = [];
-		for (var i = 0; i < markers.length; i++) {
-			marker = markers[i];
-			markerports.push(nearestport(marker[0], marker[1]));
-		}
-		// Make a list of all the markers in HTML
-		var markerhtml = "<div class='locations row'>";
-		for (var i = 0; i < markerports.length; i++) {
-			markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
-		}
-		markerhtml += "</div>";
-		$('#info').html(markerhtml);
-		// Now, let's calculate the average of all locations
-		average = averageloc(markers);
-		mapMarkers.push(
-			new google.maps.Marker({
-				position: {
-					lat: average[0],
-					lng: average[1]
-				},
-				label: {
-					text: "M",
-					color: "white"
+var markerports = [];
+function flightlength() {
+	console.log("Starting Time: " + Date.now());
+	// Make a list of marker airports (nearest)
+	for (var i = 0; i < markers.length; i++) {
+		marker = markers[i];
+		markerports.push(nearestport(marker[0], marker[1]));
+	}
+
+	// Now, let's find the the meeting point!
+	// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
+	// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
+	// First, let's find a place to store our data:
+	potentiallocations = {};
+	// Schema is: {
+	// 	"ID1": {
+	// 			"score": int,
+	// 			"individuals": [{Person1}, {Person2}, {Person3}, etc...]
+	// 		},
+	// 	"ID2": {
+	// 			"score": int,
+	// 			"individuals": [{Person1}, {Person2}, {Person3}, etc...]
+	// 		},
+	// 	"ID3": {
+	// 			"score": int,
+	// 			"individuals": [{Person1}, {Person2}, {Person3}, etc...]
+	// 		}
+	// 	etc...
+	// }
+	// PersonX is: {
+	// 	"status": status,
+	// 	"cost": costnum,
+	// 	"path": [path],
+	// 	"time": timeinsec
+	// }
+	for (var i = 0; i < markers.length; i++) {
+		marker = markers[i];
+		for(var airhubid in airhubs) {
+			airhub = airhubs[airhubid];
+
+			lat2 = parseFloat(airhub["Latitude"]);
+			long2 = parseFloat(airhub["Longitude"]);
+
+			path = findpath_coords(marker, [lat2, long2]);
+			if(!potentiallocations[airhubid]) {
+				// Create if doesn't exist
+				potentiallocations[airhubid] = {
+					"score": null,
+					"individuals": []
 				}
-
-			})
-		);
-		setMarkers();
-
-		// Now, let's find the the meeting point!
-		// To do this, we'll calculate (for each person) the time it takes to get to the 100 nearest airports.
-		// Once we have that, we can find the place with the least number of total "flight minutes" and that will be the best place to meet based on flight time
-		// First, let's find a place to store our data:
-		potentiallocations = {};
-		// Schema is: {
-		// 	"ID1": [path1, path2, path3, etc...],
-		// 	"ID2": [path1, path2, path3, etc...],
-		// 	"ID3": [path1, path2, path3, etc...]
-		// 	etc...
-		// }
-		for (var i = 0; i < markers.length; i++) {
-			marker = markers[i];
-			for(var airhubid in airhubs) {
-				airhub = airhubs[airhubid];
-
-				lat2 = parseFloat(airhub["Latitude"]);
-				long2 = parseFloat(airhub["Longitude"]);
-
-				path = findpath_coords(marker, [lat2, long2]);
-				if(!potentiallocations[airhubid]) {
-					// Create if doesn't exist
-					potentiallocations[airhubid] = []
-				}
-				potentiallocations[airhubid].push(path)
 			}
+			potentiallocations[airhubid]["individuals"].push(path);
 		}
-		console.log("Now we have a list of times for each user to reach a location, let's find the best:");
-		console.log(Date.now());
-		console.log(potentiallocations);
-		// Now we have a list of times for each user to reach a location, let's find the best:
-		bestport = null;
-		besttime = Number.MAX_SAFE_INTEGER;
-		for (var locationid in potentiallocations) {
-			console.log(potentiallocations[locationid]);
-			currcost = 0;
-			for (var x = 0; x < potentiallocations[locationid].length; x++) {
-				console.log(potentiallocations[locationid][x]);
-				cost = parseFloat(potentiallocations[locationid][x]["cost"]);
-				currcost += cost;
-			}
-			// Why are we squaring the cost (below)? This is because we want the cost for both sides to be as low as possible EACH, not total. By squaring it, we're placing a disadvantage on one number being super large.
-			currcost = currcost ** 2;
-			if (currcost < besttime) {
-				bestport = potentiallocations[locationid];
-				besttime = currcost;
-			}
+	}
+	// Calculate total score for each flight, and square it.
+	// Why are we squaring the cost (below)? This is because we want the cost for both sides to be as low as possible EACH, not total. By squaring it, we're placing a disadvantage on one number being super large.
+	maxcost = 0;
+	mincost = Number.MAX_SAFE_INTEGER;
+	for (var airportID in potentiallocations) {
+		totalcost = 0;
+		for (var i = potentiallocations[airportID]["individuals"].length - 1; i >= 0; i--) {
+			individual = potentiallocations[airportID]["individuals"][i];
+			individual["score"] = Math.pow(individual["cost"], 2);
+			// delete individual["cost"];
+			totalcost += individual["score"];
 		}
-		console.log(bestport, besttime);
-		console.log(Date.now());
+		potentiallocations[airportID]["score"] = totalcost;
+		if(totalcost > maxcost) {
+			maxcost = totalcost;
+		} else if (totalcost < mincost) {
+			mincost = totalcost;
+		}
+	}
+	// Now that we have min and max as well as total costs for each flight, let's standardize that to a 0-1 scale
+	for (var airportID in potentiallocations) {
+		potentiallocations[airportID]["score"] = (potentiallocations[airportID]["score"] - mincost)/(maxcost-mincost);
+	}
+	console.log("Finished calculating flight lengths at time: " + Date.now());
+	return potentiallocations;
 }

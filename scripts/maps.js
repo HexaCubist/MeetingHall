@@ -1,9 +1,10 @@
 var nummarkers = 0; // Number of markers on the map
 var markers = []; // Array of latitudes and longitudes of the markers
 var mapMarkers = []; // Array of markers on the map
+var map;
 
 function initMap() {
-	var map = new google.maps.Map(document.getElementById('map'), {
+	map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 1,
 		center: {lat: 0, lng: 0},
 		mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -60,6 +61,14 @@ function initMap() {
 
 		// console.log(markers);
 		// console.log(nummarkers);
+	}
+
+	window.makeHeatMap = function(data) {
+		var heatmap = new google.maps.visualization.HeatmapLayer({
+			data: data,
+			dissipating: "false"
+		});
+		heatmap.setMap(map);
 	}
 
 

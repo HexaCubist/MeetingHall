@@ -21,7 +21,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 	<script src="scripts/maps.js"></script>
 	<script async defer
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8R5GiMfrknBTSZENSItv91Vh9JfFTE4&libraries=places&callback=initMap"></script>
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN8R5GiMfrknBTSZENSItv91Vh9JfFTE4&libraries=places,visualization&callback=initMap"></script>
 
 	<!-- Utils file containing more generic functions -->
 	<script src="scripts/helper/utils.js"></script>
@@ -31,8 +31,12 @@
 	<script src="scripts/lib/a-star.js"></script>
 	<!-- Our (JSON) database of all airports and routes -->
 	<script src="scripts/data.js"></script>
-	<!-- JS file containing logic for calculating the best meeting point based on time spent in a plane -->
-	<script type="text/javascript" src="scripts/flightlength.js"></script>
+	<!-- ALGORITHMS -->
+		<!-- JS file containing logic for calculating the best meeting point based on time spent in a plane -->
+		<script type="text/javascript" src="scripts/flightlength.js"></script>
+
+	<!-- SUMMARY -->
+	<script src="scripts/best.js"></script>
 
 </body>
 </html>

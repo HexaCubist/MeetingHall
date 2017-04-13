@@ -67,3 +67,20 @@ function averageloc(locations) { // Locations in the format of [[lat1, lon1], [l
 	average_long = Math.atan2(y, x).toDegrees();
 	return([average_lat, average_long])
 }
+
+function markpoint([lat,long], label) {
+	mapMarkers.push(
+		new google.maps.Marker({
+			position: {
+				lat: lat,
+				lng: long
+			},
+			label: {
+				text: label,
+				color: "white"
+			}
+
+		})
+	);
+	setMarkers();
+}
