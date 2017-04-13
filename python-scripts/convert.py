@@ -1,6 +1,8 @@
 import json
 import codecs
 import csv
+from datetime import datetime
+import hashlib
 
 input("Welcome! Press enter to start the conversion. This will take files from airports.dat and routes.dat and build a JSON 'database' out of them")
 
@@ -76,40 +78,81 @@ with open('airports.js', 'w') as outfile:
     outfile.write("airports = ")
     json.dump(database, outfile)
 
-
+database = {}
 # Open list of Weather data by City and extract into usable format
-with codecs.open('airports.dat','r', "utf-8") as f:
+with codecs.open('GlobalLandTemperaturesByCity.csv','r', "utf-8") as f:
     reader = csv.reader(f)
-    # Schema for airports.dat:
-    # 0: Airport ID
-    # 1: Name
-    # 2: City
-    # 3: Country
-    # 4: IATA
-    # 5: ICAO
-    # 6: Latitude
-    # 7: Longitude
-    # 8: Altitude
-    # 9: Timezone
-    # 10: DST
-    # 11: Tz (Olson) format
-    # 12: Type
-    # 13: Source
+    # Schema for GlobalLandTemperaturesByCity.csv:
+    # "Date": temperatures[0],
+    # "AverageTemperature": temperatures[1],
+    # "Uncertainty": temperatures[2],
+    # "City": temperatures[3],
+    # "Country": temperatures[4],
+    # "Latitude": temperatures[5],
+    # "Longitude": temperatures[6],
+    next(f) # Skip headers
     for row in reader:
-        airport = row
-        database[airport[0]] = {
-            "Name": airport[1],
-            "City": airport[2],
-            "Country": airport[3],
-            "IATA": airport[4],
-            "ICAO": airport[5],
-            "Latitude": airport[6],
-            "Longitude": airport[7],
-            "Altitude": airport[8],
-            "Timezone": airport[9],
-            "DST": airport[10],
-            "Tz (Olson) format": airport[11],
-            "Type": airport[12],
-            "Source": airport[13]
-        }
+        temperatures = row
+        # Let's make a unique id that is replicatable so we can use it again when we get the same city
+        id = int(hashlib.md5(temperatures[3].encode('utf-8')).hexdigest(), 16)
+        # Check to see if we've already made our data structure
+        if(not database[id]):
+            # If not, then let's build an object to store data in
+            database[id] = {
+                "City" : temperatures[3],
+                "Country": temperatures[4],
+                "Latitude": temperatures[5],
+                "Longitude": temperatures[6],
+                "TemperatureMonths": { # Each month of the year, recording total temperature per month
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                    5: 0,
+                    6: 0,
+                    7: 0,
+                    8: 0,
+                    9: 0,
+                    10: 0,
+                    11: 0,
+                    12: 0
+                },
+                "DataPointMonths": { # Each month of the year, recording number of data points per month
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                    5: 0,
+                    6: 0,
+                    7: 0,
+                    8: 0,
+                    9: 0,
+                    10: 0,
+                    11: 0,
+                    12: 0
+                }
+            }
+        # Now, let's add our temperature
+        # Example date to show what we're dealing with:
+        # 1907-12-01
+        # Datetime format
+        # %Y-%m-%d
+        # The datetime object is timezone-naive, but that's okay as we're on the scale of months
+        datetime_object = datetime.strptime(temperatures[0], '%Y-%m-%d')
+        # Add the temperature to our object => array
+        database[id]["TemperatureMonths"][datetime_object.month] += temperatures[1]
+        # Increment the number of data points for that month by 1 for book keeping
+        database[id]["DataPointMonths"][datetime_object.month] += 1
+
+    # Once we have our database, let's make those numbers averages
+    for CityName in database:
+        for month in database[CityName]["TemperatureMonths"]:
+            database[CityName]["TemperatureMonths"][month] = database[CityName]["TemperatureMonths"][month]/ database[CityName]["DataPointMonths"][month]
+    # And just like that, we're done.
+
+
+# Export data as a json file
+with open('temperatures.js', 'w') as outfile:
+    outfile.write("temperatures = ")
+    json.dump(database, outfile)
 
