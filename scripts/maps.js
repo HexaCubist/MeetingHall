@@ -19,14 +19,20 @@ function initMap() {
 	// Listen for the event fired when the user selects a prediction and retrieve
 	// more details for that place.
 	searchBox.addListener('places_changed', function(event) {
-		var places = searchBox.getPlaces();
+		var place = searchBox.getPlaces()[0];
 
-		if (places.length == 0) {
-			return;
+		if (!place.geometry) return;
+		
+		placeMarker(place.geometry.location, event);
+
+		if (place.geometry.viewport) {
+			map.fitBounds(place.geometry.viewport);
+		} else {
+			map.setCenter(place.geometry.location);
 		}
-	    places.forEach(function(place) {
-			placeMarker(place.geometry.location, event);
-	    });
+
+		// Clear input box
+		$('#search-input').val('');
 	});
 
 

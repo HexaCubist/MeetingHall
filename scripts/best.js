@@ -52,7 +52,10 @@ function findbest() {
 		});
 	}
 
-	// Now that we have the flightlength score, let's sort it as an array and take the top 30 for consideration
+	// Next, let's pass that to timezone.js and calculate timezone displacements
+	placescores = timezone(placescores);
+
+	// Now that we have the flightlength and timezone score, let's sort it as an array and take the top 30 for consideration
 	// (more not used as we don't want to abuse the API's we will be using later on)
 	function compare(a,b) {
 		if (a["Total"] < b["Total"])

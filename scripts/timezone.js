@@ -34,9 +34,8 @@ function timezone(placescores) {
 	for (var i = placescores.length - 1; i >= 0; i--) {
 		// next let's loop through each person and keep a total:
 		totaldisplacement = 0;
-		place = placescores[i];
-		for (var i = place["Scores"]["flightlength"]["individuals"].length - 1; i >= 0; i--) {
-			individual = place["Scores"]["flightlength"]["individuals"][i];
+		for (var x = placescores[i]["Scores"]["flightlength"]["individuals"].length - 1; x >= 0; x--) {
+			individual = placescores[i]["Scores"]["flightlength"]["individuals"][x];
 			// individual schema: {
 			// 	"status": status,
 			// 	"cost": costnum,
@@ -79,21 +78,26 @@ function timezone(placescores) {
 			}
 			// Make the displacement absolute
 			tza = Math.abs(tza);
-			
+			tza = Math.pow(tza, 2);
+
 			// Update min and max
 			if(tza > min) {min = tza;}
 			if(tza < max) {max = tza;}
-			
-			
+
+
 			// Change in timezone = tza
-			place["Scores"]["timezone"]["individuals"][i] = tza;
+			placescores[i]["Scores"]["timezone"]["individuals"][x] = tza;
 			totaldisplacement += tza;
 		}
-		place["Scores"]["timezone"]["score"] = totaldisplacement;
+		placescores[i]["Scores"]["timezone"]["score"] = totaldisplacement;
 	}
-	
+
+	total = 0;
 	// Now let's standardize the data on the scale 0-1
 	for (var i = placescores.length - 1; i >= 0; i--) {
-		place["Scores"]["timezone"]["score"] = (place["Scores"]["timezone"]["score"] - min)/(max-min);
+		placescores[i]["Scores"]["timezone"]["score"] = (placescores[i]["Scores"]["timezone"]["score"] - min)/(max-min);
+		total += placescores[i]["Scores"]["timezone"]["score"];
 	}
+	placescores[i]["Total"] += total;
+	return placescores;
 }

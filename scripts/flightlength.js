@@ -49,14 +49,14 @@ for (var airportid in airports) {
 	}
 }
 
-// Let's also build a list of airports where they have 50 or more routes leaving. We can use this later as a list of options for destinations
+// Let's also build a list of airports where they have 10 or more routes leaving. We can use this later as a list of options for destinations
 // Why are we doing this? The smaller the airport, typically the smaller the surrounding population. This means that often it'd be a less ideal location to meet
 airhubs = {}
 for (var airportid in airports) {
 	airport = airports[airportid];
 	if(!airport["Routes"]) {continue;}
 	// console.log(airport["Routes"].length);
-	if(airport["Routes"].length >= 50) {
+	if(airport["Routes"].length >= 10) {
 		airhubs[airportid] = airport;
 	}
 }
