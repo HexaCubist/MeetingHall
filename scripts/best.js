@@ -23,9 +23,6 @@ function findbest() {
 	// 			"timezone": {
 	// 				score: totalscore,
 	// 				individuals: [array]
-	// 			},
-	// 			"weather": {
-	// 				score: totalscore,
 	// 			}
 	// 		}
 	// 	}
@@ -53,8 +50,6 @@ function findbest() {
 
 	// Next, let's pass that to timezone.js and calculate timezone displacements
 	placescores = timezone(placescores, priority1);
-	// And also pass it to weather.js to calculate weather scores
-	placescores = weather(placescores, priority2)
 
 	// Now that we have the flightlength and timezone score, let's sort it as an array and take the top 30 for consideration
 	// (more not used as we don't want to abuse the API's we will be using later on)
@@ -74,7 +69,7 @@ function findbest() {
 	// Trim to top 30
 	var top30 = placescores.slice(0, 30);
 	// Trim to top 10
-	var top10 = placescores.slice(0, 30);
+	var top10 = placescores.slice(0, 10);
 	// Get airport lat long from ID for top 50
 	for (var i = 0; i < top10.length; i++) {
 		var latlong = [];
@@ -98,8 +93,8 @@ function findbest() {
 	makeHeatMap(heatMapData);
 
 
-	// Display city ui
-	buildui();
+	// Display ui of best places
+	buildui(top10);
 }
 
 
@@ -112,12 +107,15 @@ function findbest() {
 
 // COMPONENTS OF FINDBEST ALGORITHM
 // Stuff here isn't critical to the main function, and so for readability has been placed here
-function buildui() {
-	// First, let's make a little ui magic happen, and show the city we detected each marker to be in
-	// Make a list of all the markers in HTML
+function buildui(top10) {
+	// Make a list of all the best places below in HTML
 	var markerhtml = "<div class='locations row'>";
-	for (var i = 0; i < markerports.length; i++) {
-		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Marker </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + markerports[i]["airport"]["City"] + "<br /><br /><b>Airport ID: </b>" + markerports[i]["ID"] + "<br /></div></div></div>";
+	for (var i = 0; i < top10.length; i++) {
+		airport = airports[i];
+		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Rank </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + airport["airport"]["City"] + "<br /><br /><b>Country: </b>" + airport["Country"] + "<br /><h3>Ratings: </h3>" + 
+			"<div class='progress'> <div class='progress-bar' role='progressbar' aria-valuenow='" + top10[i]["Scores"]["flightlength"]["score"] + "' aria-valuemin='0' aria-valuemax='1'></div> </div>" +
+			"<div class='progress'> <div class='progress-bar' role='progressbar' aria-valuenow='" + top10[i]["Scores"]["timezone"]["score"] + "' aria-valuemin='0' aria-valuemax='1'></div> </div>" +
+ 			"<br /></div></div></div>";
 	}
 	markerhtml += "</div>";
 	$('#info').html(markerhtml);

@@ -17,14 +17,42 @@
 		<br>
 		<h3>Meeting Hall 
 		<button onclick="clearMarkers()" class="btn inline btn-danger float-right"><i class="fa fa-trash" aria-hidden="true"></i> Clear all</button>
-		<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
+		<button class="btn inline btn-success float-right" data-toggle="modal" data-target="#warning-modal">Calculate Best Meeting place</button>
 		</h3>
 		<br>
 		<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
 		<div id="map" class=""></div>
 		<div id="info" class=""></div>
 	</div>
-	<!-- List of  -->
+
+	<!-- List of markers -->
+	<div id="markerlist"></div>
+	<!-- Warning modal to give user an idea of what to expect  -->
+	<div class="modal fade" id="warning-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Are you sure about that?</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					The calculations required to find the best meeting spot are very intensive, and as such you can expect the page to crash for a while (on the laptop and computer we tested, it takes about 1-2 minutes for 6 locations).
+					<br/>
+					<br/>
+					While the page is busy calculating, it may become unresponsive (and depending on your internet browser you may be warned of this). This is normal, so please let the page do it's thing. It may also not be possible to close the page while it proccesses.
+					<br/>
+					<br/>
+					If you're happy with the locations you selected, press the green button below, or Close to head back to the page to reselect.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-success" onclick="findbest()" >Begin Calculations</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- JS Libraries -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -47,9 +75,6 @@
 		<script type="text/javascript" src="scripts/flightlength.js"></script>
 		<!-- JS file containing logic for calculating the best meeting point based on timezone displacement -->
 		<script type="text/javascript" src="scripts/timezone.js"></script>
-		<!-- JS file containing logic for calculating the best meeting point based on historical weather data -->
-		<script type="text/javascript" src="scripts/weather.js"></script>
-
 	<!-- SUMMARY -->
 	<script src="scripts/best.js"></script>
 

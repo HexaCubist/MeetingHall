@@ -45,7 +45,26 @@ function initMap() {
 		for (var i = 0; i < mapMarkers.length; i++) {
 			mapMarkers[i].setMap(map); //Add the marker to the map
 		}
+		// Let's add the markers from here to our side menu
+		html = "";
+		for (var i = 0; i < mapMarkers.length; i++) {
+			lat = markers[i][0];
+			long = markers[i][1];
+			nearestport = nearestport(lat,long);
+			city = nearestport["airport"]["City"];
+			// String
+			html += "<div id='marker'> <h3>Marker" + i + "</h3> <p><strong>City:</strong> " + city + "</p> </div>"
+		}
+		$('#markerlist').html(markerhtml);
 	}
+
+	window.deleteMarker = function(markerid) {
+		mapMarkers[markerid].setMap(null);
+		mapMarkers.splice(markerid, 1);
+		markers.splice(markerid, 1);
+		setMarkers();
+	}
+
 	window.clearMarkers = function() {
 		for (var i = 0; i < mapMarkers.length; i++) {
 			mapMarkers[i].setMap(null); //Remove the marker from the map

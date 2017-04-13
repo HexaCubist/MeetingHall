@@ -15,9 +15,6 @@ function timezone(placescores, weighting) {
 	// 			"timezone": {
 	// 				score: totalscore,
 	// 				individuals: [array]
-	// 			},
-	// 			"weather": {
-	// 				score: totalscore,
 	// 			}
 	// 		}
 	// 	}
