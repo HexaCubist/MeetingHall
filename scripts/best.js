@@ -6,7 +6,7 @@
 // Each priority is a weight to be assigned to factors of that priority. A weight of 2 is worth 2x as much as one with a weight of 1.
 var priority1 = 8
 var priority2 = 3
-var priority3 = 1
+// var priority3 = 1
 
 
 function findbest() {
@@ -53,6 +53,8 @@ function findbest() {
 
 	// Next, let's pass that to timezone.js and calculate timezone displacements
 	placescores = timezone(placescores, priority1);
+	// And also pass it to weather.js to calculate weather scores
+	placescores = weather(placescores, priority2)
 
 	// Now that we have the flightlength and timezone score, let's sort it as an array and take the top 30 for consideration
 	// (more not used as we don't want to abuse the API's we will be using later on)

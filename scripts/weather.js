@@ -1,7 +1,7 @@
-// This is the file for calculating the score for weather
+// This is the file for calculating the score for the best location based on historical weather data
 // It will interact directly with the current score variable
 
-function timezone(placescores, weighting) {
+function weather(placescores, weighting) {
 	// Schema = [
 	// 	{
 	// 		"ID": AirportID
