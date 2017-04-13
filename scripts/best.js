@@ -2,6 +2,13 @@
 // Here is the heart of the program. This combines all of the algorithms, weights them and makes a points total for each location
 // Because of API limits, we'll only consider the top 30 places based on the first algorithm (flightlength)
 
+// Some constants:
+// Each priority is a weight to be assigned to factors of that priority. A weight of 2 is worth 2x as much as one with a weight of 1.
+var priority1 = 8
+var priority2 = 3
+var priority3 = 1
+
+
 function findbest() {
 	// First, let's make an (unsorted) variable to store all of our rank scores
 	// Schema = [
@@ -34,7 +41,7 @@ function findbest() {
 		// Make airport in the placescore variable
 		placescores.push({
 			"ID": airportID,
-			"Total": flightlengths[airportID]["score"],
+			"Total": flightlengths[airportID]["score"] * priority1,
 			"Scores": {
 				"flightlength": flightlengths[airportID],
 				"timezone": {
@@ -53,7 +60,7 @@ function findbest() {
 	}
 
 	// Next, let's pass that to timezone.js and calculate timezone displacements
-	placescores = timezone(placescores);
+	placescores = timezone(placescores, priority1);
 
 	// Now that we have the flightlength and timezone score, let's sort it as an array and take the top 30 for consideration
 	// (more not used as we don't want to abuse the API's we will be using later on)
@@ -88,7 +95,10 @@ function findbest() {
 		var latlong = [];
 		latlong[0] = parseFloat(airports[placescores[i]["ID"]]["Latitude"]);
 		latlong[1] = parseFloat(airports[placescores[i]["ID"]]["Longitude"]);
-		heatMapData.push({location: new google.maps.LatLng(latlong[0], latlong[1]), weight: ((placescores[i]["Total"] * -1) + 1)});
+		// Calculate max value
+		// maxvalue = priority1 + priority2 + priority3
+		maxvalue = priority1
+		heatMapData.push({location: new google.maps.LatLng(latlong[0], latlong[1]), weight: ((placescores[i]["Total"] * -1) + maxvalue)});
 	}
 	makeHeatMap(heatMapData);
 

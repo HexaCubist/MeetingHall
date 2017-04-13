@@ -2,7 +2,7 @@
 // It will interact directly with the current score variable
 // 
 // 
-function timezone(placescores) {
+function timezone(placescores, weighting) {
 	// Schema = [
 	// 	{
 	// 		"ID": AirportID
@@ -92,12 +92,14 @@ function timezone(placescores) {
 		placescores[i]["Scores"]["timezone"]["score"] = totaldisplacement;
 	}
 
-	total = 0;
 	// Now let's standardize the data on the scale 0-1
 	for (var i = placescores.length - 1; i >= 0; i--) {
-		placescores[i]["Scores"]["timezone"]["score"] = (placescores[i]["Scores"]["timezone"]["score"] - min)/(max-min);
-		total += placescores[i]["Scores"]["timezone"]["score"];
+		total = 0;
+		for (var x = placescores[i]["Scores"]["timezone"]["individuals"]	.length - 1; x >= 0; x--) {
+			total += placescores[i]["Scores"]["timezone"]["individuals"][x];
+		}
+		placescores[i]["Scores"]["timezone"]["score"] = (total - min)/(max-min);
+		placescores[i]["Total"] += placescores[i]["Scores"]["timezone"]["score"] * weighting;
 	}
-	placescores[i]["Total"] += total;
 	return placescores;
 }
