@@ -47,7 +47,7 @@ function initMap() {
 		}
 		// Let's add the markers from here to our side menu
 		html = "";
-		for (var i = 0; i < mapMarkers.length; i++) {
+		for (var i = 0; i < markers.length; i++) {
 			lat = markers[i][0];
 			long = markers[i][1];
 			nearestport = nearestport(lat,long);
