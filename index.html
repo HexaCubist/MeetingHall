@@ -6,14 +6,16 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 <body>
+	<div class="container">
 	<br>
-	<h3>Google Maps 
-	<input type="text" id="search-input"></ins>
+	<h3>Meeting Hall 
 	<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
-	<button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear</button> </h3>
+	<button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear Markers</button> </h3>
 	<br>
-	<div id="map"></div>
-	<div id="info"></div>
+	<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
+	<div id="map" class=""></div>
+	<div id="info" class=""></div>
+	</div>
 
 	<!-- JS Libraries -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

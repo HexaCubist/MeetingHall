@@ -22,7 +22,7 @@ function initMap() {
 		var place = searchBox.getPlaces()[0];
 
 		if (!place.geometry) return;
-		
+
 		placeMarker(place.geometry.location, event);
 
 		if (place.geometry.viewport) {
@@ -72,7 +72,10 @@ function initMap() {
 	window.makeHeatMap = function(data) {
 		var heatmap = new google.maps.visualization.HeatmapLayer({
 			data: data,
-			dissipating: "false"
+			dissipating: false,
+			maxIntensity: 1,
+			radius: 5,
+			opacity: 0.35,
 		});
 		heatmap.setMap(map);
 	}

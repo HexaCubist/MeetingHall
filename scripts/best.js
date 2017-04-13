@@ -96,9 +96,10 @@ function findbest() {
 		latlong[0] = parseFloat(airports[placescores[i]["ID"]]["Latitude"]);
 		latlong[1] = parseFloat(airports[placescores[i]["ID"]]["Longitude"]);
 		// Calculate max value
-		// maxvalue = priority1 + priority2 + priority3
-		maxvalue = priority1
-		heatMapData.push({location: new google.maps.LatLng(latlong[0], latlong[1]), weight: ((placescores[i]["Total"] * -1) + maxvalue)});
+		// maxvalue = priority1 * 2 + priority2 + priority3
+		maxvalue = priority1 * 2;
+		weight = ((placescores[i]["Total"] * -1) + maxvalue)/maxvalue;
+		heatMapData.push({location: new google.maps.LatLng(latlong[0], latlong[1]), weight: weight});
 	}
 	makeHeatMap(heatMapData);
 
