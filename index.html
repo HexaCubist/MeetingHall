@@ -2,23 +2,29 @@
 <html>
 <head>
 	<title>MeetingHall</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="theme-color" content="#ffffff">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
 	<div class="container">
-	<br>
-	<h3>Meeting Hall 
-	<a href="docs/about.md">
-	<button onclick="clearMarkers()" class="btn inline btn-danger float-right"><i class="fa fa-trash" aria-hidden="true"></i> Clear all</button>
-	<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
-	</h3>
-	<br>
-	<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
-	<div id="map" class=""></div>
-	<div id="info" class=""></div>
+		<br>
+		<h3>Meeting Hall 
+		<button onclick="clearMarkers()" class="btn inline btn-danger float-right"><i class="fa fa-trash" aria-hidden="true"></i> Clear all</button>
+		<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
+		</h3>
+		<br>
+		<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
+		<div id="map" class=""></div>
+		<div id="info" class=""></div>
 	</div>
+	<!-- List of  -->
 
 	<!-- JS Libraries -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
