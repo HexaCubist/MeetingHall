@@ -26,10 +26,6 @@ function findbest() {
 	// 			},
 	// 			"weather": {
 	// 				score: totalscore,
-	// 			},
-	// 			"cost": {
-	// 				score: totalscore,
-	// 				individuals: [array]
 	// 			}
 	// 		}
 	// 	}
@@ -50,10 +46,6 @@ function findbest() {
 				},
 				"weather": {
 					score: 0,
-				},
-				"cost": {
-					score: 0,
-					individuals: []
 				}
 			}
 		});
