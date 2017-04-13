@@ -4,13 +4,15 @@
 	<title>MeetingHall</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
 	<div class="container">
 	<br>
 	<h3>Meeting Hall 
+	<button onclick="clearMarkers()" class="btn inline btn-danger float-right"><i class="fa fa-trash" aria-hidden="true"></i> Clear all</button>
 	<button onclick="findbest()" class="btn inline btn-success float-right">Calculate Best Meeting place</button>
-	<button onclick="clearMarkers()" class="btn inline btn-danger float-right">Clear Markers</button> </h3>
+	</h3>
 	<br>
 	<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
 	<div id="map" class=""></div>
