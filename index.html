@@ -15,11 +15,28 @@
 <body>
 	<div class="container">
 		<br>
-		<h3>Meeting Hall 
+		<h3>Meeting Hall
+		<a class="btn btn-primary inlin float-right" data-toggle="collapse" href="#aboutbox" aria-expanded="false" aria-controls="aboutbox">What is this?</a>
 		<button onclick="clearMarkers()" class="btn inline btn-danger float-right"><i class="fa fa-trash" aria-hidden="true"></i> Clear all</button>
 		<button class="btn inline btn-success float-right" data-toggle="modal" data-target="#warning-modal">Calculate Best Meeting place</button>
 		</h3>
-		<br>
+		<br />
+		<div class="collapse" id="aboutbox">
+			<div class="card card-block">
+				<p>
+					Meeting Hall is Whangarei Boys' High School submission to the International Mathematics Modelling Challenge.
+					Hosting international meetings to further business or scientific efforts has become common in our increasingly globalized world. This means that individuals from all corners of the world are brought together to do intellectually demanding work as a team. When individuals travel long distances through multiple time zones, they experience a physiological condition known as jet lag. This is defined as the feeling of tiredness or confusion that air travellers suffer when the destination has a different time to the source location. As these meetings can be relatively short, minimising this jet lag is essential to maximising the overall productivity of the meeting. Therefore, a location needs to be chosen for each individual meeting that reduces the total amount of jet lag experienced by the group.
+				</p>
+				<p>
+					This is a code implementation of the algorithms we built as an answer to this problem. We have focused on making our algorithm as general as possible, and have attempted to rely as little as possible on external data sources (such as air routes) as the large amount of data we require on such things makes requesting data from an external site impractical for a live solution.
+				</p>
+				<p>
+					You can view the source code for our submission at <a href="https://github.com/hexacubist/MeetingHall">our github page</a>, as well as the original data source files and scripts used to convert the data to a useable form.
+				</p>
+			</div>
+		</div>
+
+		<br />
 		<input type="text" id="search-input" class="float-right form-control" placeholder="Type to search for locations..."></ins>
 		<div id="map" class=""></div>
 		<div id="info" class=""></div>
@@ -48,7 +65,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-success" onclick="findbest()" >Begin Calculations</button>
+					<button type="button" class="btn btn-success" onclick="findbest()" data-dismiss="modal" >Begin Calculations</button>
 				</div>
 			</div>
 		</div>

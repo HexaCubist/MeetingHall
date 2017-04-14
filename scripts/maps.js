@@ -5,7 +5,7 @@ var map;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 1,
+		zoom: 2,
 		center: {lat: 0, lng: 0},
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	});
@@ -48,13 +48,13 @@ function initMap() {
 		// Let's add the markers from here to our side menu
 		html = "";
 		for (var i = 0; i < markers.length; i++) {
-			console.log(markers[i]);
+			// console.log(markers[i]);
 			lat = markers[i][0];
 			long = markers[i][1];
 			airport = nearestport(lat,long);
 			city = airport["airport"]["City"];
 			// String
-			html += "<div id='marker'> <h3>Marker" + i + "</h3> <p><strong>City:</strong> " + city + "</p> </div>"
+			html += "<div class='marker'> <h3>Marker " + (i+1) + "</h3> <p><strong>City:</strong> " + city + "</p><button class='btn btn-danger' onclick='deleteMarker(" + i + ")'>Delete</button> </div>"
 		}
 		$('#markerlist').html(html);
 	}
@@ -93,7 +93,7 @@ function initMap() {
 		var heatmap = new google.maps.visualization.HeatmapLayer({
 			data: data,
 			dissipating: false,
-			maxIntensity: 1,
+			maxIntensity: 4,
 			radius: 5,
 			opacity: 0.35,
 		});

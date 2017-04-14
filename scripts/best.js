@@ -75,7 +75,7 @@ function findbest() {
 		var latlong = [];
 		latlong[0] = parseFloat(airports[top10[i]["ID"]]["Latitude"]);
 		latlong[1] = parseFloat(airports[top10[i]["ID"]]["Longitude"]);
-		markpoint(latlong, String(i));
+		markpoint(latlong, String(i+1));
 	}
 	
 	// Heatmapdata - we'll build an array of heatmapdata for a nice heatmap layer
@@ -111,10 +111,11 @@ function buildui(top10) {
 	// Make a list of all the best places below in HTML
 	var markerhtml = "<div class='locations row'>";
 	for (var i = 0; i < top10.length; i++) {
-		airport = airports[i];
-		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Rank </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + airport["airport"]["City"] + "<br /><br /><b>Country: </b>" + airport["Country"] + "<br /><h3>Ratings: </h3>" + 
-			"<div class='progress'> <div class='progress-bar' role='progressbar' aria-valuenow='" + top10[i]["Scores"]["flightlength"]["score"] + "' aria-valuemin='0' aria-valuemax='1'></div> </div>" +
-			"<div class='progress'> <div class='progress-bar' role='progressbar' aria-valuenow='" + top10[i]["Scores"]["timezone"]["score"] + "' aria-valuemin='0' aria-valuemax='1'></div> </div>" +
+		airport = airports[top10[i]["ID"]];
+		console.log(top10[i]["ID"]);
+		markerhtml += "<div class='locationinfo card col-sm-3' id='marker" + i + "'><div class='card-block'> <div class='card-title'>Rank </b>" + (i+1) + "</b> </div> <div class='card-text'><b>City: </b>" + airport["City"] + "<br /><br /><b>Country: </b>" + airport["Country"] + "<br />" + 
+			// "<div class='progress'> <div class='progress-bar' style='width: " + (top10[i]["Scores"]["flightlength"]["score"]*-1+1)*100 + "%' role='progressbar' aria-valuenow='" + (top10[i]["Scores"]["flightlength"]["score"]*-1+1)*100 + "' aria-valuemin='0' aria-valuemax='100'></div> </div>" +
+			// "<div class='progress'> <div class='progress-bar' style='width: " + (top10[i]["Scores"]["timezone"]["score"]*-1+1)*100 + "%' role='progressbar' aria-valuenow='" + (top10[i]["Scores"]["timezone"]["score"]*-1+1)*100 + "' aria-valuemin='0' aria-valuemax='100'></div> </div>" +
  			"<br /></div></div></div>";
 	}
 	markerhtml += "</div>";
